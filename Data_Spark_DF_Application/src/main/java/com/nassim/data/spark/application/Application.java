@@ -136,6 +136,13 @@ public class Application implements Callable<Integer> {
                     .sasToken(outputSasToken)
                     .options(outputOptionsMap)
                     .build();
+        } else if ("jdbc".equals(type)) {
+            return JdbcStorage.builder()
+                    .cache(outputCache)
+                    .options(outputOptionsMap)
+                    .uri(outputUri)
+                    .table(outputTable)
+                    .build();
         }
         else
             throw new RuntimeException("Type is still not supported : " + type);
