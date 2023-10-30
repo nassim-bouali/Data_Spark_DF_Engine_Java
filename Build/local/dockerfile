@@ -1,0 +1,33 @@
+# Use an official OpenJDK 11 runtime as a parent image
+FROM openjdk:11-jdk
+
+# Install Maven
+RUN apt-get update && apt-get install -y maven
+
+# Install required tools
+RUN apt-get update && apt-get install -y wget
+
+# Install Spark (adjust the version as needed)
+RUN wget https://dlcdn.apache.org/spark/spark-3.5.0/spark-3.5.0-bin-hadoop3.tgz && \
+    tar -xvzf spark-3.5.0-bin-hadoop3.tgz && \
+    mv spark-3.5.0-bin-hadoop3 /opt/spark && \
+    rm spark-3.5.0-bin-hadoop3.tgz
+
+# Set environment variables
+ENV SPARK_HOME /opt/spark
+ENV PATH $SPARK_HOME/bin:$PATH
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy your source code and pom.xml
+COPY . /app
+
+# Build your Spark Java application
+RUN mvn clean package
+
+# Define the working directory where your Spark application will run
+WORKDIR /app/distribution
+
+# The CMD instruction specifies the default command to run on startup. You can override it when running the container.
+CMD ["java", "-jar", "data-spark-df-application.jar"]

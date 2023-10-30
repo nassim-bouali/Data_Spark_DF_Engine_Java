@@ -7,9 +7,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="data-spark-df-model" />
+        <module name="Data-Spark-DF-Model" />
         <module name="data-spark-df-service" />
         <module name="data-spark-df-application" />
-        <module name="Data-Spark-DF-Model" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
