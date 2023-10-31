@@ -20,4 +20,5 @@ jobs:
         run: docker build -t spark-df-batch-processing-java -f Build/local/dockerfile .
 
       - name: Push Docker Image
-        run: docker push spark-df-batch-processing-java
+        run: docker push spark-df-batch-processing-java:latest
+
