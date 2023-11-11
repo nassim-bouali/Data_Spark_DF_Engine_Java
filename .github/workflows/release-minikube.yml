@@ -33,7 +33,7 @@ jobs:
 
       - name: Deploy to Minikube
         run: |
-          kubectl apply -f ./Data_Spark_DF_Engine_Java/deploy/batch-df-processing-engine-deployment.yaml
+          kubectl apply -f ./deploy/batch-df-processing-engine-deployment.yaml
         env:
           KUBECONFIG: ${{ runner.workspace }}/kubeconfig.yaml
 
