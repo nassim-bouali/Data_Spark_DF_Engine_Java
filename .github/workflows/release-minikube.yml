@@ -25,12 +25,6 @@ jobs:
         env:
           KUBECONFIG: ${{ runner.workspace }}/kubeconfig.yaml
 
-      - name: Mount data Volume to Minikube node
-        run: |
-          minikube mount Data_Spark_DF_Application/src/test/resources/data/input:/data/input
-        env:
-          KUBECONFIG: ${{ runner.workspace }}/kubeconfig.yaml
-
       - name: Deploy to Minikube
         run: |
           kubectl apply -f ./deploy/batch-df-processing-engine-deployment.yaml

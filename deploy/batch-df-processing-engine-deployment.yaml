@@ -39,15 +39,3 @@ spec:
             limits:
               memory: "500Mi"
               cpu: "0.5"
-          volumeMounts:
-            - name: input-volume
-              mountPath: /data/input
-            - name: output-volume
-              mountPath: /data/output
-      volumes:
-        - name: input-volume
-          hostPath:
-            path: "/data/input"
-        - name: output-volume
-          hostPath:
-            path: "/data/output"
