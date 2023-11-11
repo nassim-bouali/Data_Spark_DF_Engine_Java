@@ -25,18 +25,21 @@ jobs:
         env:
           KUBECONFIG: ${{ runner.workspace }}/kubeconfig.yaml
 
+      - name: Mount data Volume to Minikube node
+        run: |
+          minikube mount Data_Spark_DF_Application/src/test/resources/data:/data
+        env:
+          KUBECONFIG: ${{ runner.workspace }}/kubeconfig.yaml
+
       - name: Deploy to Minikube
         run: |
           kubectl apply -f ./deploy/batch-df-processing-engine-deployment.yaml
-          kubectl wait --timeout=5m --for=condition=available deployment/batch-df-processing-engine-deployment
-          sleep 30s  # Introduce a delay to allow the pod to fully start
-          POD_NAME=$(kubectl get pods --selector=app=batch-df-processing-engine -o jsonpath="{.items[0].metadata.name}")
-          kubectl cp ./Data_Spark_DF_Application/src/test/resources/data $POD_NAME:/data
         env:
           KUBECONFIG: ${{ runner.workspace }}/kubeconfig.yaml
 
       - name: Verify Deployment
         run: |
+          kubectl wait --timeout=5m --for=condition=available deployment/batch-df-processing-engine-deployment
           POD_NAME=$(kubectl get pods --selector=app=batch-df-processing-engine -o jsonpath="{.items[0].metadata.name}")
           kubectl logs -f $POD_NAME
         env:
