@@ -1,0 +1,49 @@
+name: Deploy to Minikube
+
+on:
+  push:
+    branches:
+      - main  # Project's main branch name
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Minikube
+        run: |
+          # Install Minikube
+          curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+          chmod +x minikube
+          sudo install minikube /usr/local/bin/
+          
+          # Start Minikube
+          minikube start
+        env:
+          KUBECONFIG: ${{ runner.workspace }}/kubeconfig.yaml
+
+      - name: Mount data Volume to Minikube node
+        run: |
+          minikube mount /Data_Spark_DF_Application/src/test/resources/data:/data
+        env:
+          KUBECONFIG: ${{ runner.workspace }}/kubeconfig.yaml
+
+      - name: Deploy to Minikube
+        run: |
+          kubectl apply -f /deploy/batch-df-processing-engine-deployment.yaml
+        env:
+          KUBECONFIG: ${{ runner.workspace }}/kubeconfig.yaml
+
+      - name: Verify Deployment
+        run: |
+          kubectl logs -f batch-df-processing-engine-deployment
+        env:
+          KUBECONFIG: ${{ runner.workspace }}/kubeconfig.yaml
+
+      - name: Stop Minikube
+        run: minikube stop
+
+      # Add additional steps for testing, notifications, and cleanup as needed
