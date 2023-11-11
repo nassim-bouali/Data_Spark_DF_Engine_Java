@@ -27,7 +27,7 @@ jobs:
 
       - name: Mount data Volume to Minikube node
         run: |
-          minikube mount Data_Spark_DF_Application/src/test/resources/data:/data
+          minikube mount Data_Spark_DF_Application/src/test/resources/data/input:/data/input
         env:
           KUBECONFIG: ${{ runner.workspace }}/kubeconfig.yaml
 
