@@ -1,0 +1,56 @@
+# minikube mount path/to/project/Data_Spark_DF_Application/src/test/resources/data:/data
+# kubectl apply -f path/to/project/deploy/local/batch-df-processing-engine-deployment.yaml
+# kubectl logs -f POD_ID
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: batch-df-processing-engine-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: batch-df-processing-engine
+  template:
+    metadata:
+      labels:
+        app: batch-df-processing-engine
+    spec:
+      containers:
+        - name: batch-df-processing-engine-deployment
+          image: nassimb7/spark-df-batch-processing-java:latest
+          command: [ "spark-submit" ]
+          args:
+            - "--class"
+            - "com.nassim.data.spark.application.Application"
+            - "/app/distribution/data-spark-df-application.jar"
+            - "--input-type"
+            - "csv"
+            - "--input-path"
+            - "/data/input/input_data1.csv"
+            - "--input-options"
+            - "{\"header\":\"true\",\"delimiter\":\";\"}"
+            - "--output-type"
+            - "csv"
+            - "--output-path"
+            - "/data/output/files"
+            - "--output-options"
+            - "{\"header\":\"true\",\"delimiter\":\";\"}"
+          resources:
+            requests:
+              memory: "200Mi"
+              cpu: "0.2"
+            limits:
+              memory: "500Mi"
+              cpu: "0.5"
+          volumeMounts:
+            - name: input-volume
+              mountPath: /data/input
+            - name: output-volume
+              mountPath: /data/output
+      volumes:
+        - name: input-volume
+          hostPath:
+            path: "/data/input"
+        - name: output-volume
+          hostPath:
+            path: "/data/output"
